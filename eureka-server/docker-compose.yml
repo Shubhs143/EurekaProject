@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  team4server:
+    
+    image: docker.io/pradnya2099/eurekaserver
+    ports:
+    - 8761
+    
+    
+  pmodule:
+    image: docker.io/pradnya2099/productsmodule
+    environment:
+    - eureka.client.service-url.defaultZone=http://team4server:8761/eureka/
+    - eureka.instance.prefer-ip-address=true
+    
+    ports:
+    - 8080
+    depends_on:
+    - team4server
+    
+  cmodule:
+    image: docker.io/pradnya2099/cartmodule
+    environment:
+    - eureka.client.service-url.defaultZone=http://team4server:8761/eureka/
+    - eureka.instance.prefer-ip-address=true
+ 
+    
+    ports:
+    - 8002
+    depends_on:
+    - team4server
+    - pmodule
+    
+    
+  vmodule:
+    image: docker.io/pradnya2099/vendormodule
+    environment:
+    - eureka.client.service-url.defaultZone=http://team4server:8761/eureka/
+    - eureka.instance.prefer-ip-address=true
+   
+    ports:
+    - 8003
+    depends_on:
+    - team4server
+    - pmodule
+    - cmodule
